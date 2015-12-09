@@ -1,1 +1,3 @@
 # ESPEasyMySensors
+
+Very experimental stuff here...
