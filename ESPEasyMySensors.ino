@@ -540,6 +540,6 @@ void receive(const MyMessage &message)
   Serial.print("  status: ");
   Serial.println(message.getBool());
   Serial.print("  value: ");
-  Serial.println( message.getInt();
+  Serial.println( message.getInt());
 }
 
