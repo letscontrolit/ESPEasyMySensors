@@ -2,8 +2,8 @@
 //######################## Plugin 006: Temperature and Humidity sensor DHT 11/22 ########################
 //#######################################################################################################
 
-MyMessage *msgHum006;
-MyMessage *msgTemp006;
+MyMessage *msgHum005;
+MyMessage *msgTemp005;
 
 #define PLUGIN_005
 #define PLUGIN_ID_005         5
@@ -82,12 +82,14 @@ boolean Plugin_005(byte function, struct EventStruct *event, String& string)
       
     case PLUGIN_INIT:
       {
+        if (!msgHum005)
+          msgHum005 = new MyMessage(event->BaseVarIndex, V_HUM);
+        if (!msgTemp005)
+          msgTemp005 = new MyMessage(event->BaseVarIndex + 1, V_TEMP);
         present(event->BaseVarIndex, S_HUM);
         present(event->BaseVarIndex + 1, S_TEMP);
         Serial.print("Present DHT: ");
         Serial.println(event->BaseVarIndex);
-        msgHum006 = new MyMessage(event->BaseVarIndex, V_HUM);
-        msgTemp006 = new MyMessage(event->BaseVarIndex + 1, V_TEMP);
         success = true;
         break;
       }
@@ -156,13 +158,15 @@ boolean Plugin_005(byte function, struct EventStruct *event, String& string)
                   UserVar[event->BaseVarIndex + 1] = word(dht_dat[0], dht_dat[1]) * 0.1; // Humidity
                 }
                 String log = F("DHT  : Temperature: ");
-                send(msgTemp006->set(UserVar[event->BaseVarIndex], 1));
                 log += UserVar[event->BaseVarIndex];
                 addLog(LOG_LEVEL_INFO, log);
                 log = F("DHT  : Humidity: ");
-                send(msgHum006->set(UserVar[event->BaseVarIndex + 1], 1));
                 log += UserVar[event->BaseVarIndex + 1];
                 addLog(LOG_LEVEL_INFO, log);
+
+                send(msgTemp005->set(UserVar[event->BaseVarIndex], 1));
+                send(msgHum005->set(UserVar[event->BaseVarIndex + 1], 1));
+
                 success = true;
               } // checksum
             } // error

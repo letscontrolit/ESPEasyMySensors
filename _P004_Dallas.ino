@@ -107,10 +107,11 @@ boolean Plugin_004(byte function, struct EventStruct *event, String& string)
 
     case PLUGIN_INIT:
       {
+        if (!msgTemp004)
+          msgTemp004 = new MyMessage(event->BaseVarIndex, V_TEMP);
         present(event->BaseVarIndex, S_TEMP);
         Serial.print("Present Dallas: ");
         Serial.println(event->BaseVarIndex);
-        msgTemp004 = new MyMessage(event->BaseVarIndex, V_TEMP);
         success = true;
         break;
       }

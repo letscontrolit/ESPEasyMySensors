@@ -379,7 +379,6 @@ void handle_devices() {
 
   String taskindex = WebServer.arg("index");
   String taskdevicenumber = WebServer.arg("taskdevicenumber");
-  String taskdeviceid = WebServer.arg("taskdeviceid");
   String taskdevicepin1 = WebServer.arg("taskdevicepin1");
   String taskdevicepin2 = WebServer.arg("taskdevicepin2");
   String taskdevicepin1pullup = WebServer.arg("taskdevicepin1pullup");
@@ -443,10 +442,6 @@ void handle_devices() {
       urlDecode(tmpString);
       strcpy(ExtraTaskSettings.TaskDeviceName, tmpString);
       Settings.TaskDevicePort[index - 1] = taskdeviceport.toInt();
-      if (Settings.TaskDeviceNumber[index - 1] != 0)
-        Settings.TaskDeviceID[index - 1] = taskdeviceid.toInt();
-      else
-        Settings.TaskDeviceID[index - 1] = 0;
       if (Device[DeviceIndex].Type == DEVICE_TYPE_SINGLE)
       {
         Settings.TaskDevicePin1[index - 1] = taskdevicepin1.toInt();
@@ -505,7 +500,7 @@ void handle_devices() {
     reply += page;
   reply += F("\">></a>");
 
-  reply += F("<TH>Task<TH>Device<TH>Name<TH>Port<TH>IDX/Variable<TH>GPIO<TH>Values");
+  reply += F("<TH>Task<TH>Device<TH>Name<TH>Port<TH>GPIO<TH>Values");
 
   String deviceName;
 
@@ -536,18 +531,11 @@ void handle_devices() {
     reply += ExtraTaskSettings.TaskDeviceName;
     reply += F("<TD>");
 
-#ifdef ESP_EASY
     byte customConfig = false;
     customConfig = PluginCall(PLUGIN_WEBFORM_SHOW_CONFIG, &TempEvent, reply);
     if (!customConfig)
       if (Device[DeviceIndex].Ports != 0)
         reply += Settings.TaskDevicePort[x];
-#endif
-
-    reply += F("<TD>");
-
-    if (Settings.TaskDeviceID[x] != 0)
-      reply += Settings.TaskDeviceID[x];
 
     reply += F("<TD>");
     if (Device[DeviceIndex].Type == DEVICE_TYPE_I2C)
@@ -627,9 +615,6 @@ void handle_devices() {
           reply += Settings.TaskDevicePort[index - 1];
           reply += F("'>");
         }
-        //reply += F("<TR><TD>IDX / Var:<TD><input type='text' name='taskdeviceid' value='");
-        //reply += Settings.TaskDeviceID[index - 1];
-        //reply += F("'>");
 
         if (Device[DeviceIndex].Type == DEVICE_TYPE_SINGLE || Device[DeviceIndex].Type == DEVICE_TYPE_DUAL)
         {

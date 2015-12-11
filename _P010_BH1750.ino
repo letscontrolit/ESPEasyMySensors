@@ -45,8 +45,11 @@ boolean Plugin_010(byte function, struct EventStruct *event, String& string)
       
     case PLUGIN_INIT:
       {
+        if (!msgLux010)
+          msgLux010 = new MyMessage(event->BaseVarIndex, V_LIGHT_LEVEL);
         present(event->BaseVarIndex, V_LIGHT_LEVEL);
-        msgLux010 = new MyMessage(event->BaseVarIndex, V_LIGHT_LEVEL);
+        Serial.print("Present BH1750: ");
+        Serial.println(event->BaseVarIndex);
         success = true;
         break;
       }
@@ -65,10 +68,11 @@ boolean Plugin_010(byte function, struct EventStruct *event, String& string)
       byte b2 = Wire.read();
       float val=0;     
       val=((b1<<8)|b2)/1.2;
-      val=val+15;
       UserVar[event->BaseVarIndex] = val;
       String log = F("LUX  : Light intensity: ");
-      msgLux010 = new MyMessage(event->BaseVarIndex, V_LIGHT_LEVEL);
+      
+      send(msgLux010->set((uint16_t )UserVar[event->BaseVarIndex]));
+      
       log += UserVar[event->BaseVarIndex];
       addLog(LOG_LEVEL_INFO,log);
       success=true;

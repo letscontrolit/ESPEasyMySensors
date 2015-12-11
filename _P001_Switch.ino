@@ -117,10 +117,11 @@ boolean Plugin_001(byte function, struct EventStruct *event, String& string)
 
     case PLUGIN_INIT:
       {
+        if (!msgLight001)
+          msgLight001 = new MyMessage(event->BaseVarIndex, V_LIGHT);
         present(event->BaseVarIndex, S_LIGHT);
         Serial.print("Present Switch: ");
         Serial.println(event->BaseVarIndex);
-        msgLight001 = new MyMessage(event->BaseVarIndex, V_LIGHT);
         if (Settings.TaskDevicePin1PullUp[event->TaskIndex])
           pinMode(Settings.TaskDevicePin1[event->TaskIndex], INPUT_PULLUP);
         else
@@ -168,9 +169,12 @@ boolean Plugin_001(byte function, struct EventStruct *event, String& string)
               UserVar[event->BaseVarIndex] = Settings.TaskDevicePluginConfig[event->TaskIndex][1];
             }
             String log = F("SW   : State ");
-            send(msgLight001->set(sendState));
+
             log += sendState;
             addLog(LOG_LEVEL_INFO, log);
+
+            send(msgLight001->set(sendState));
+
             //sendData(event);
           }
         }
