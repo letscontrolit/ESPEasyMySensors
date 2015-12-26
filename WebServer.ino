@@ -113,7 +113,7 @@ void handle_root() {
   if (!isLoggedIn()) return;
 
   int freeMem = ESP.getFreeHeap();
-  String sCommand = urlDecode(WebServer.arg("cmd").c_str());
+  String sCommand = WebServer.arg("cmd");
 
   if ((strcasecmp_P(sCommand.c_str(), PSTR("wifidisconnect")) != 0) && (strcasecmp_P(sCommand.c_str(), PSTR("reboot")) != 0))
   {
@@ -209,22 +209,22 @@ void handle_config() {
 
   char tmpString[64];
 
-  String name = urlDecode(WebServer.arg("name").c_str());
-  String password = urlDecode(WebServer.arg("password").c_str());
-  String ssid = urlDecode(WebServer.arg("ssid").c_str());
-  String key = urlDecode(WebServer.arg("key").c_str());
-  String controllerip = urlDecode(WebServer.arg("controllerip").c_str());
-  String controllerport = urlDecode(WebServer.arg("controllerport").c_str());
-  String protocol = urlDecode(WebServer.arg("protocol").c_str());
-  String controlleruser = urlDecode(WebServer.arg("controlleruser").c_str());
-  String controllerpassword = urlDecode(WebServer.arg("controllerpassword").c_str());
-  String sensordelay = urlDecode(WebServer.arg("delay").c_str());
-  String deepsleep = urlDecode(WebServer.arg("deepsleep").c_str());
-  String espip = urlDecode(WebServer.arg("espip").c_str());
-  String espgateway = urlDecode(WebServer.arg("espgateway").c_str());
-  String espsubnet = urlDecode(WebServer.arg("espsubnet").c_str());
-  String unit = urlDecode(WebServer.arg("unit").c_str());
-  String apkey = urlDecode(WebServer.arg("apkey").c_str());
+  String name = WebServer.arg("name");
+  String password = WebServer.arg("password");
+  String ssid = WebServer.arg("ssid");
+  String key = WebServer.arg("key");
+  String controllerip = WebServer.arg("controllerip");
+  String controllerport = WebServer.arg("controllerport");
+  String protocol = WebServer.arg("protocol");
+  String controlleruser = WebServer.arg("controlleruser");
+  String controllerpassword = WebServer.arg("controllerpassword");
+  String sensordelay = WebServer.arg("delay");
+  String deepsleep = WebServer.arg("deepsleep");
+  String espip = WebServer.arg("espip");
+  String espgateway = WebServer.arg("espgateway");
+  String espsubnet = WebServer.arg("espsubnet");
+  String unit = WebServer.arg("unit");
+  String apkey = WebServer.arg("apkey");
 
   if (ssid[0] != 0)
   {
@@ -439,7 +439,6 @@ void handle_devices() {
       Settings.TaskDeviceNumber[index - 1] = taskdevicenumber.toInt();
       DeviceIndex = getDeviceIndex(Settings.TaskDeviceNumber[index - 1]);
       taskdevicename.toCharArray(tmpString, 26);
-      urlDecode(tmpString);
       strcpy(ExtraTaskSettings.TaskDeviceName, tmpString);
       Settings.TaskDevicePort[index - 1] = taskdeviceport.toInt();
       if (Device[DeviceIndex].Type == DEVICE_TYPE_SINGLE)
@@ -461,7 +460,6 @@ void handle_devices() {
       for (byte varNr = 0; varNr < Device[DeviceIndex].ValueCount; varNr++)
       {
         taskdeviceformula[varNr].toCharArray(tmpString, 41);
-        urlDecode(tmpString);
         strcpy(ExtraTaskSettings.TaskDeviceFormula[varNr], tmpString);
       }
 
@@ -470,7 +468,6 @@ void handle_devices() {
       for (byte varNr = 0; varNr < Device[DeviceIndex].ValueCount; varNr++)
       {
         taskdevicevaluename[varNr].toCharArray(tmpString, 26);
-        urlDecode(tmpString);
         strcpy(ExtraTaskSettings.TaskDeviceValueNames[varNr], tmpString);
       }
       TempEvent.TaskIndex = index - 1;
@@ -978,7 +975,6 @@ void handle_tools() {
   char command[80];
   command[0] = 0;
   webrequest.toCharArray(command, 80);
-  urlDecode(command);
 
   String reply = "";
   addMenu(reply);
@@ -1138,7 +1134,6 @@ void handle_login() {
   char command[80];
   command[0] = 0;
   webrequest.toCharArray(command, 80);
-  urlDecode(command);
 
   String reply = "";
   reply += F("<form method='post'>");
@@ -1178,7 +1173,6 @@ void handle_control() {
   char command[80];
   command[0] = 0;
   webrequest.toCharArray(command, 80);
-  urlDecode(command);
   boolean validCmd = false;
 
   struct EventStruct TempEvent;
@@ -1236,10 +1230,8 @@ void handle_advanced() {
   if (edit.length() != 0)
   {
     mqttsubscribe.toCharArray(tmpString, 81);
-    urlDecode(tmpString);
     strcpy(Settings.MQTTsubscribe, tmpString);
     mqttpublish.toCharArray(tmpString, 81);
-    urlDecode(tmpString);
     strcpy(Settings.MQTTpublish, tmpString);
     Settings.MessageDelay = messagedelay.toInt();
     Settings.IP_Octet = ip.toInt();
@@ -1334,49 +1326,6 @@ boolean isLoggedIn()
   return WebLoggedIn;
 }
 
-//********************************************************************************
-// Decode special characters in URL of get/post data
-//********************************************************************************
-String urlDecode(const char *src)
-{
-  String rString;
-  const char* dst = src;
-  char a, b;
-
-  while (*src) {
-
-    if (*src == '+')
-    {
-      rString += ' ';
-      src++;
-    }
-    else
-    {
-      if ((*src == '%') &&
-          ((a = src[1]) && (b = src[2])) &&
-          (isxdigit(a) && isxdigit(b))) {
-        if (a >= 'a')
-          a -= 'a' - 'A';
-        if (a >= 'A')
-          a -= ('A' - 10);
-        else
-          a -= '0';
-        if (b >= 'a')
-          b -= 'a' - 'A';
-        if (b >= 'A')
-          b -= ('A' - 10);
-        else
-          b -= '0';
-        rString += (char)(16 * a + b);
-        src += 3;
-      }
-      else {
-        rString += *src++;
-      }
-    }
-  }
-  return rString;
-}
 
 #if FEATURE_SPIFFS
 //********************************************************************************

@@ -71,7 +71,7 @@ boolean Plugin_010(byte function, struct EventStruct *event, String& string)
       UserVar[event->BaseVarIndex] = val;
       String log = F("LUX  : Light intensity: ");
       
-      send(msgLux010->set((uint16_t )UserVar[event->BaseVarIndex]));
+      send(msgLux010->set((uint16_t)UserVar[event->BaseVarIndex]));
       
       log += UserVar[event->BaseVarIndex];
       addLog(LOG_LEVEL_INFO,log);

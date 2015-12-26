@@ -1,6 +1,6 @@
 // this is needed at this time, because the MySensors library uses hard coded config at compile time!
-#define MY_ESP8266_SSID "********"
-#define MY_ESP8266_PASSWORD "********"
+#define MY_ESP8266_SSID "SUNWAY1"
+#define MY_ESP8266_PASSWORD "duiker34"
 #define MY_IP_ADDRESS 192,168,0,16
 #define MY_IP_GATEWAY_ADDRESS 192,168,0,1
 #define MY_IP_SUBNET_ADDRESS 255,255,255,0
@@ -66,7 +66,7 @@
 #define ESP_PROJECT_PID           2015050101L
 #define ESP_EASY
 #define VERSION                             9
-#define BUILD                               3
+#define BUILD                               4
 #define REBOOT_ON_MAX_CONNECTION_FAILURES  30
 #define FEATURE_SPIFFS                  false
 
@@ -127,9 +127,9 @@
 #include <FS.h>
 #endif
 
-#define MY_GATEWAY_ESP8266
-#define MY_PORT 5003
-#define MY_GATEWAY_MAX_CLIENTS 2
+//#define MY_GATEWAY_ESP8266
+//#define MY_PORT 5003
+//#define MY_GATEWAY_MAX_CLIENTS 2
 #include <EEPROM.h>
 #include <MySensor.h>
 
@@ -539,7 +539,9 @@ void receive(const MyMessage &message)
   Serial.println(message.sensor);
   Serial.print("  status: ");
   Serial.println(message.getBool());
-  Serial.print("  value: ");
+  Serial.print("  value int: ");
   Serial.println( message.getInt());
+  Serial.print("  value long: ");
+  Serial.println( message.getLong());
 }
 
